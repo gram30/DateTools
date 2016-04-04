@@ -5,6 +5,9 @@
 "%d hours ago" = "%d時間前";
 
 /* No comment provided by engineer. */
+"%d hour ago" = "%d時間前";
+
+/* No comment provided by engineer. */
 "%d minutes ago" = "%d分前";
 
 /* No comment provided by engineer. */
@@ -26,7 +29,7 @@
 "An hour ago" = "1時間前";
 
 /* No comment provided by engineer. */
-"Just now" = "たった今";
+"Just now" = "オンライン";
 
 /* No comment provided by engineer. */
 "Last month" = "先月";
