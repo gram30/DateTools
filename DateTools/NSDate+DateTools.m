@@ -209,16 +209,15 @@ static NSCalendar *implicitCalendar = nil;
                 return [self logicLocalizedStringFromFormat:@"%%d %@hour ago" withValue:value];
             }
         case MinutesAgo:
+        case SecondsAgo:
             if (isShort) {
                 return [self logicLocalizedStringFromFormat:@"%%d%@m" withValue:value];
             } else if (value >= 10) {
                 NSInteger adjusted = (value / 10) * 10;
                 return [self logicLocalizedStringFromFormat:@"%%d %@minutes ago" withValue:adjusted];
             } else {
-                return DateToolsLocalizedStrings(@"Just now");
+                return [self logicLocalizedStringFromFormat:@"%%d %@minutes ago" withValue:value];
             }
-        case SecondsAgo:
-            return DateToolsLocalizedStrings(@"Just now");
     }
     return nil;
 }
