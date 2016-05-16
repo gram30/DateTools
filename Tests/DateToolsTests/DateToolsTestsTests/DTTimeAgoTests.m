@@ -157,7 +157,7 @@
     self.date0 = [self.formatter dateFromString:@"2014 11 07 10:15:00.000"];
     self.date1 = [self.formatter dateFromString:@"2014 11 07 10:15:01.000"];
     NSString *ago = [self.date0 timeAgoSinceDate:self.date1];
-    XCTAssertEqualObjects(ago, DateToolsLocalizedStrings(@"1分前"));
+    XCTAssertEqualObjects(ago, DateToolsLocalizedStrings(@"1秒前"));
 }
 
 - (void)testShortTimeAgo1MinAgo
