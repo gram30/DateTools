@@ -44,7 +44,8 @@ typedef NS_ENUM(NSUInteger, DateAgoFormat){
     DateAgoLongUsingNumericDatesAndTimes,
     DateAgoLongUsingNumericDates,
     DateAgoLongUsingNumericTimes,
-    DateAgoShort
+    DateAgoShort,
+    DateAgoWeek,
 };
 
 typedef NS_ENUM(NSUInteger, DateAgoValues){
@@ -95,6 +96,10 @@ static NSCalendar *implicitCalendar = nil;
     return [date shortTimeAgoSinceDate:[NSDate date]];
 }
 
++ (NSString*)weekTimeAgoSinceDate:(NSDate*)date{
+    return [date weekTimeAgoSinceDate:[NSDate date]];
+}
+
 /**
  *  Returns a string with the most convenient unit of time representing
  *  how far in the past that date is from now.
@@ -114,12 +119,37 @@ static NSCalendar *implicitCalendar = nil;
 - (NSString *)shortTimeAgoSinceNow{
     return [self shortTimeAgoSinceDate:[NSDate date]];
 }
-- (NSString *)timeAgoSinceDate:(NSDate *)date {
-    return [self timeAgoSinceDate:date format:DateAgoLong];
+
+- (NSString *)weekTimeAgoSinceNow{
+    return [self weekTimeAgoSinceDate:[NSDate date]];
+}
+
+- (NSString *)timeAgoSinceDate:(NSDate *)date{
+    return [self timeAgoSinceDate:date numericDates:NO];
+}
+
+- (NSString *)timeAgoSinceDate:(NSDate *)date numericDates:(BOOL)useNumericDates{
+    return [self timeAgoSinceDate:date numericDates:useNumericDates numericTimes:NO];
+}
+
+- (NSString *)timeAgoSinceDate:(NSDate *)date numericDates:(BOOL)useNumericDates numericTimes:(BOOL)useNumericTimes{
+    if (useNumericDates && useNumericTimes) {
+        return [self timeAgoSinceDate:date format:DateAgoLongUsingNumericDatesAndTimes];
+    } else if (useNumericDates) {
+        return [self timeAgoSinceDate:date format:DateAgoLongUsingNumericDates];
+    } else if (useNumericTimes) {
+        return [self timeAgoSinceDate:date format:DateAgoLongUsingNumericDates];
+    } else {
+        return [self timeAgoSinceDate:date format:DateAgoLong];
+    }
 }
 
 - (NSString *)shortTimeAgoSinceDate:(NSDate *)date{
     return [self timeAgoSinceDate:date format:DateAgoShort];
+}
+
+- (NSString *)weekTimeAgoSinceDate:(NSDate *)date{
+    return [self timeAgoSinceDate:date format:DateAgoWeek];
 }
 
 - (NSString *)timeAgoSinceDate:(NSDate *)date format:(DateAgoFormat)format {
@@ -166,7 +196,8 @@ static NSCalendar *implicitCalendar = nil;
 
 - (NSString *)localizedStringFor:(DateAgoFormat)format valueType:(DateAgoValues)valueType value:(NSInteger)value {
     BOOL isShort = format == DateAgoShort;
-    
+    BOOL isWeek =  format == DateAgoWeek;
+
     switch (valueType) {
         case YearsAgo:
             if (isShort) {
@@ -196,6 +227,14 @@ static NSCalendar *implicitCalendar = nil;
             if (isShort) {
                 return [self logicLocalizedStringFromFormat:@"%%d%@d" withValue:value];
             } else if (value >= 2) {
+                if (isWeek && value <= 7) {
+                    NSDateFormatter *dayDateFormatter = [[NSDateFormatter alloc]init];
+                    dayDateFormatter.dateFormat = @"EEE";
+                    NSString *eee = [dayDateFormatter stringFromDate:self];
+
+                    return DateToolsLocalizedStrings(eee);
+                }
+
                 return [self logicLocalizedStringFromFormat:@"%%d %@days ago" withValue:value];
             } else {
                 return DateToolsLocalizedStrings(@"Yesterday");
